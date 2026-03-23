@@ -596,6 +596,17 @@ class ReadTreeSuite extends RestrictedUnpicklingSuite {
     assert(containsSubtree(guardWithAlternatives)(clue(tree)))
   }
 
+  testUnpickle("named-extractor-pattern", "simple_trees.NamedExtractorPattern") { tree =>
+    // case Wrapper(value = Some(v)) => v
+    val namedPatternCheck: StructureCheck = {
+      case NamedPattern(
+            SimpleName("value"),
+            TypeTest(Unapply(_, _, List(Bind(SimpleName("v"), WildcardPattern(_), _))), _)
+          ) =>
+    }
+    assert(containsSubtree(namedPatternCheck)(clue(tree)))
+  }
+
   testUnpickle("assign", "simple_trees.Assign") { tree =>
     val assignBlockMatch: StructureCheck = {
       case Block(

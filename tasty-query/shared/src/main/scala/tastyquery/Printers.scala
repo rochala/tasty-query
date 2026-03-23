@@ -607,6 +607,11 @@ private[tastyquery] object Printers:
       case ExprPattern(expr) =>
         print(expr)
 
+      case NamedPattern(name, body) =>
+        print(name)
+        print(" = ")
+        print(body)
+
       case QuotePattern(bindings, body, quotes, patternType) =>
         print("'<")
         print(quotes)
