@@ -906,6 +906,13 @@ private[tasties] class TreeUnpickler private (
       reader.readByte()
       val shared = forkAt(reader.readAddr()).readPattern
       if spn.isUnknown then shared else shared.withPos(spn)
+    case NAMEDARG =>
+      // Named extractor patterns (e.g., `case Foo(field = value)`) wrap sub-patterns in NAMEDARG.
+      val spn = span
+      reader.readByte()
+      val name = readUnsignedName()
+      val body = readPattern
+      NamedPattern(name, body)(spn)
     case _ =>
       val expr = readTerm
       ExprPattern(expr)(expr.pos)

@@ -145,6 +145,8 @@ object Traversers:
         traverse(patterns)
       case ExprPattern(expr) =>
         traverse(expr)
+      case NamedPattern(name, body) =>
+        traverse(body)
       case WildcardPattern(tpe) =>
         ()
       case QuotePattern(bindings, body, quotes, patternType) =>

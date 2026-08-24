@@ -638,6 +638,12 @@ object Trees {
     override final def withPos(pos: SourcePosition): ExprPattern = ExprPattern(expr)(pos)
   end ExprPattern
 
+  /** A named argument pattern `name = body` in an [[Unapply]], as in `case Foo(field = pat)`. */
+  final case class NamedPattern(name: UnsignedTermName, body: PatternTree)(pos: SourcePosition)
+      extends PatternTree(pos):
+    override final def withPos(pos: SourcePosition): NamedPattern = NamedPattern(name, body)(pos)
+  end NamedPattern
+
   /** A tree representing a quote pattern `'{ type binding1; ...; body }` or `'[ type binding1; ...; body ]`.
     *
     * The `bindings` contain the list of quote pattern type variable definitions (`TypeTreeBind`s)
