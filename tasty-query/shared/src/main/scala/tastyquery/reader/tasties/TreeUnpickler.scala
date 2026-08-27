@@ -386,7 +386,7 @@ private[tasties] class TreeUnpickler private (
         case PRIVATEqualified | PROTECTEDqualified =>
           privateWithin = Some(readWithin(sym))
         case ANNOTATION =>
-          annots ::= readAnnotation()
+          annots ::= readAnnotationInModifiers()
         case _ =>
           ()
     end while
@@ -394,13 +394,14 @@ private[tasties] class TreeUnpickler private (
     sym.setPrivateWithin(privateWithin).setAnnotations(annots)
   end readAnnotationsInModifiers
 
-  private def readAnnotation()(using SourceFile): Annotation =
-    val end = reader.readEnd()
+  private def readAnnotationInModifiers()(using SourceFile): Annotation =
+    reader.readEnd()
     skipTree() // skip the typeref to the annotation class; we only use the tree
+    readAnnotation()
+  end readAnnotationInModifiers
 
-    if isCompactAnnotTypeTag(reader.nextByte) then
-      // #464 Apparently we can have CompactAnnotations anyway?
-      Annotation.fromAnnotTypeAndArgs(readTrueType(), Nil)
+  private def readAnnotation()(using SourceFile): Annotation =
+    if isCompactAnnotTypeTag(reader.nextByte) then Annotation.fromAnnotTypeAndArgs(readTrueType(), Nil)
     else Annotation(readTerm)
   end readAnnotation
 
@@ -1351,8 +1352,8 @@ private[tasties] class TreeUnpickler private (
       reader.readByte()
       reader.readEnd()
       val typ = readTrueType()
-      val annot = readTerm
-      AnnotatedType(typ, Annotation(annot))
+      val annot = readAnnotation()
+      AnnotatedType(typ, annot)
     case ANDtype =>
       reader.readByte()
       reader.readEnd()
