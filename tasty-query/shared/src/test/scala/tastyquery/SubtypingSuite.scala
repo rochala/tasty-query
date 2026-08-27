@@ -970,7 +970,7 @@ class SubtypingSuite extends UnrestrictedUnpicklingSuite:
       ctx.findTopLevelClass("simple_trees.GenericMethodWithTypeParamDependencies")
 
     val foo = GenericMethodWithTypeParamDependenciesClass.findNonOverloadedDecl(termName("foo"))
-    val DefDef(_, Right(typeParams) :: Left(Nil) :: Nil, _, _, _$1) = foo.tree.get: @unchecked
+    val DefDef(_, Right(typeParams) :: Left(Nil) :: Nil, _, _, _) = foo.tree.get: @unchecked
 
     locally {
       val List(a, b, c, d) = typeParams.map(_.symbol): @unchecked
